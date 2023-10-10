@@ -3,4 +3,6 @@ output_data/
 *.tex
 *.csv
 *.xls*
+*.pdf
+*.png
 *env
