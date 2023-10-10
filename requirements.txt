@@ -1,0 +1,10 @@
+argparse
+pandas
+numpy
+seaborn
+matplotlib
+statsmodels
+rpy2
+editdistance
+unidecode
+# scipy

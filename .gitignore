@@ -1,0 +1,6 @@
+data/
+output_data/
+*.tex
+*.csv
+*.xls*
+*env
