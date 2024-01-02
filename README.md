@@ -1,14 +1,18 @@
 # Crosslinguistic analysis rate of change
-With the script ``analyze_data.py``, an analysis of the rate of change of person markers for different grammatical persons is performed.
+With the script ``analyse_data.py``, an analysis of the rate of change of person markers for different grammatical persons is performed.
 
-The script requires a few installation steps. The script uses R, so install R and CMake beforehand. On an Ubuntu machine:
+The script requires a few installation steps:
+1. The script uses R, so install R, CMake and some dependencies needed for the R packages beforehand. On an Ubuntu machine:
 ```
-sudo apt install r-base cmake
+sudo apt install r-base cmake libharfbuzz-dev libfribidi-dev
 ```
-Install the Python package requirements:
+
+2. Install the Python package requirements:
 ```pip3 install -r requirements.txt``` (or with ``sudo`` for global install)
 
-Install the required R packages:
+3. Install the required R packages:
 ```python3 install_r_pkgs.py``` (or with ``sudo`` for global install)
 
-Now you can run the script with ```python analyze_data.py```. It will output plots in the ``output_data`` directory. This script requires the file ``verbal_person-number_indexes_merged.csv`` from https://zenodo.org/record/6028260 to be in the folder ``data``. 
+4. This script requires the file ``verbal_person-number_indexes_merged.csv`` from https://zenodo.org/record/6028260 to be in the folder ``data``.
+
+5. Now you can run the script by running: ```python analyse_data.py```. It will output plots in the ``output_data`` directory. For the model using unnormalised Levenshtein distance, set the variable ``NORMALISATION`` to ``none``. For the normalised model, where the Levenshtein distance is divided by the length of the longest form, set ``NORMALISATION`` to ``max``.

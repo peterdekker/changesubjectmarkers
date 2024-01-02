@@ -1,5 +1,5 @@
 
-# analyze_data.py: Standalone script to perform statistical analysis of length change in data of Serzant & Moroz (2022).
+# analyse_data.py: Standalone script to perform statistical analysis of length change in data of Serzant & Moroz (2022).
 # Input data expected to be in: data/verbal_person-number_indexes_merged.csv
 # See README for more information on installation.
 
@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import os
 import unidecode
 import numpy as np
-from itertools import combinations
+# from itertools import combinations
 
 import rpy2.robjects as robjects
 import rpy2.robjects.numpy2ri
@@ -18,30 +18,22 @@ import rpy2.robjects.pandas2ri
 robjects.numpy2ri.activate()
 robjects.pandas2ri.activate()
 
+### User-settable params: ###
+NORMALISATION = "none" #For unnormalised model: 'none'. For normalised model: 'max'
+EXCLUDE_LANGUAGES_PROTO_0 = False # Exclude languages (and thus whole families) where one of the protoforms is zero
+### ###
+
 plt.rcParams['savefig.dpi'] = 300
-
 currentdir = os.path.dirname(os.path.realpath(__file__))
-
-# CLTS_ARCHIVE_PATH = os.path.join(currentdir, "2.1.0.tar.gz")
-# CLTS_ARCHIVE_URL = "https://github.com/cldf-clts/clts/archive/refs/tags/v2.1.0.tar.gz"
-# CLTS_PATH = os.path.join(currentdir, "clts-2.1.0")
-
 OUTPUT_DIR = "output_data"
 OUTPUT_DIR_PROTO = os.path.join(OUTPUT_DIR, "proto")
 OUTPUT_DIR_MODERN = os.path.join(OUTPUT_DIR, "modern")
-
-# User-settable params:
-EXCLUDE_LANGUAGES_PROTO_0 = False # Exclude languages (and thus whole families) where one of the protoforms is zero
-NORMALISATION = "max"
 excl_proto0_label = "_exclproto0" if EXCLUDE_LANGUAGES_PROTO_0 else ""
 norm_label = f"_{NORMALISATION}"
-NORM_STRING_TITLE = "normalised " if NORMALISATION is not "none" else "" # This assumes always 'max' normalisation, other types get the same label
-
+NORM_STRING_TITLE = "normalised " if NORMALISATION != "none" else "" # This assumes always 'max' normalisation, other types get the same label
 pd.set_option('display.max_rows', 100)
 img_extension_pyplots = "png"
-
 person_markers = ["1sg", "2sg", "3sg", "1pl", "2pl", "3pl"]
-
 
 
 def normalised_levenshtein(modern,proto, norm):
