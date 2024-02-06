@@ -13,6 +13,6 @@ sudo apt install r-base cmake libharfbuzz-dev libfribidi-dev
 3. Install the required R packages:
 ```python3 install_r_pkgs.py``` (or with ``sudo`` for global install)
 
-4. This script requires the file ``verbal_person-number_indexes_merged.csv`` from https://zenodo.org/record/6028260 to be in the folder ``data``.
+4. This script requires the file ``verbal_person-number_indexes_merged.csv`` from https://zenodo.org/records/7641119 to be in the folder ``data``.
 
 5. Now you can run the script by running: ```python analyse_data.py```. It will output plots in the ``output_data`` directory. For the model using unnormalised Levenshtein distance, set the variable ``NORMALISATION`` to ``none``. For the normalised model, where the Levenshtein distance is divided by the length of the longest form, set ``NORMALISATION`` to ``max``.

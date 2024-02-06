@@ -27,7 +27,6 @@ plt.rcParams['savefig.dpi'] = 300
 currentdir = os.path.dirname(os.path.realpath(__file__))
 OUTPUT_DIR = "output_data"
 OUTPUT_DIR_PROTO = os.path.join(OUTPUT_DIR, "proto")
-OUTPUT_DIR_MODERN = os.path.join(OUTPUT_DIR, "modern")
 excl_proto0_label = "_exclproto0" if EXCLUDE_LANGUAGES_PROTO_0 else ""
 norm_label = f"_{NORMALISATION}"
 NORM_STRING_TITLE = "normalised " if NORMALISATION != "none" else "" # This assumes always 'max' normalisation, other types get the same label
@@ -51,9 +50,6 @@ def normalised_levenshtein(modern,proto, norm):
     return raw_dist / norm_len if norm_len > 0 else 0
 
 
-##########################################
-
-
 def get_first(x):
     return x[0]
 
@@ -68,8 +64,6 @@ def main():
 
     if not os.path.exists(OUTPUT_DIR_PROTO):
         os.makedirs(OUTPUT_DIR_PROTO)
-    if not os.path.exists(OUTPUT_DIR_MODERN):
-        os.makedirs(OUTPUT_DIR_MODERN)
 
     df = pd.read_csv("data/verbal_person-number_indexes_merged.csv")
 
@@ -86,13 +80,12 @@ def main():
     df = df[df['proto_form'].notna()]
     #languages_one_protoform_na = df[df["proto_form"].isna()][["language"]]
     #df = df[~df["language"].isin(languages_one_protoform_na["language"])]
-    stats_df(df, "after removing proto NA")
+    stats_df(df, "after removing languages (=families) with protoform NA")
 
     # Reporting: Creating tables with zero forms, to aid discussion in paper
     proto_lengths = df.groupby(["proto_language","person_number"]).first()["proto_length"]
     proto_lengths.to_csv(os.path.join(OUTPUT_DIR,"proto_lengths_fam.csv"))
     proto_lengths_zero = proto_lengths[proto_lengths == 0.0]
-    # proto_lengths_zero = proto_lengths[proto_lengths["proto_length"] == 0.0]
     proto_lengths_zero.to_csv(os.path.join(OUTPUT_DIR,"proto_lengths_fam_zero.csv"))
     modern_reflexes_proto_lengths_zero = pd.merge(df, proto_lengths_zero, on=["proto_language", "person_number"])
     modern_reflexes_proto_lengths_zero.to_csv(os.path.join(OUTPUT_DIR,"modern_reflexes_proto_zero.csv"))
@@ -105,9 +98,6 @@ def main():
         df = df[~df["language"].isin(languages_proto0["language"])] # remove all languages where protolanguage is 0
         stats_df(df, "after removing languages where one protoform has length 0")
 
-    # Show number of languages per family
-    nunique_family = df.groupby("proto_language")["language"].nunique()
-    # print(nunique_family)
 
     ### Analysis length: difference modern form and protoform
     df["proto_diff_length"] = (df["modern_length"] - df["proto_length"])
@@ -142,13 +132,9 @@ def main():
         ## Delete : (lengthening vowel but no sound on its own)
         df[f"{form_type}_corr"] = df[f"{form_type}_corr"].str.replace(":", "", regex=False)
         
-
-        # df[f"{form_type}_corr"] = df[f"{form_type}_corr"].apply(ipa_to_soundclass)
         df[f"{form_type}_corr"] = df[f"{form_type}_corr"].apply(unidecode.unidecode)
 
     df["proto_levenshtein"] = df.apply(lambda x: normalised_levenshtein(x["modern_form_corr"], x["proto_form_corr"], NORMALISATION), axis=1)
-
-    df["person_merged"] = df["person"].apply(lambda p: "third" if p=="third" else "firstsecond")
 
     ## Reporting: calculate proportion of forms with Levenshtein distance 0 that also have protoform 0
     print("Distribution of persons in dataset")
