@@ -1,5 +1,5 @@
 
-# analyse_data.py: Standalone script to perform statistical analysis of length change in data of Serzant & Moroz (2022).
+# analyse_data.py: Standalone script to perform statistical analysis of change between proto and modern forms of person markers.
 # Input data expected to be in: data/verbal_person-number_indexes_merged.csv
 # See README for more information on installation.
 
@@ -76,11 +76,11 @@ def main():
     stats_df(df, "original")
     # Filter out entries without form or protoform (removes languages without protolanguage + possibly more)
     df = df[df['modern_form'].notna()]
-    stats_df(df, "after removing modern NA")
+    stats_df(df, "after removing modern forms which are NA")
     df = df[df['proto_form'].notna()]
     #languages_one_protoform_na = df[df["proto_form"].isna()][["language"]]
     #df = df[~df["language"].isin(languages_one_protoform_na["language"])]
-    stats_df(df, "after removing languages (=families) with protoform NA")
+    stats_df(df, "after removing languages with protoform NA")
 
     # Reporting: Creating tables with zero forms, to aid discussion in paper
     proto_lengths = df.groupby(["proto_language","person_number"]).first()["proto_length"]
@@ -98,9 +98,6 @@ def main():
         df = df[~df["language"].isin(languages_proto0["language"])] # remove all languages where protolanguage is 0
         stats_df(df, "after removing languages where one protoform has length 0")
 
-
-    ### Analysis length: difference modern form and protoform
-    df["proto_diff_length"] = (df["modern_length"] - df["proto_length"])
     
     ### Analysis levenshtein distance in forms
 
@@ -136,6 +133,10 @@ def main():
 
     df["proto_levenshtein"] = df.apply(lambda x: normalised_levenshtein(x["modern_form_corr"], x["proto_form_corr"], NORMALISATION), axis=1)
 
+    # From now on df not further mutated
+    # Output final dataframe for statistical analysis to file
+    df.to_csv("final_data_cleaned_for_analysis.csv")
+
     ## Reporting: calculate proportion of forms with Levenshtein distance 0 that also have protoform 0
     print("Distribution of persons in dataset")
     distr_persons_dataset = df["person_number"].value_counts()
@@ -165,6 +166,7 @@ def main():
     distr_persons_lev0_proto0.to_latex(os.path.join(OUTPUT_DIR,"distr_persons_lev0_proto0.tex"))
     
 
+
     ## Statistical analyses in R
     with robjects.local_context() as lc:
         lc['df'] = df
@@ -180,7 +182,7 @@ def main():
 
                 modelProtoLev <- lmer(proto_levenshtein ~ person*number + (1|clade3), data=df)
                 modelProtoLevSum <- summary(modelProtoLev)
-                predictionsProtoLev <- ggpredict(model=modelProtoLev, terms=c('person','number'))
+                predictionsProtoLev <- ggpredict(model=modelProtoLev, terms=c("person", "number"))
                 plot(predictionsProtoLev)+
                 ggtitle("Mixed model {NORM_STRING_TITLE}Levenshtein distance proto and modern length")+
                 labs(y = "Levenshtein distance")
@@ -193,6 +195,7 @@ def main():
                 ''')
 
         print(" - Proto Levenshtein")
+        print(lc['modelProtoLev'])
         print(lc['modelProtoLevSum'])
         print(lc['predictionsProtoLev'])
 
@@ -200,12 +203,12 @@ def main():
         print(" - Anova afex")
         print(lc['anovaLevAfex'])
 
-    sns.violinplot(x="person_number", y="proto_levenshtein", data=df) # hue="proto_language"
-    plt.savefig(os.path.join(OUTPUT_DIR_PROTO,f"proto_levenshtein_violin{excl_proto0_label}{norm_label}.{img_extension_pyplots}"))
-    plt.clf()
-    sns.stripplot(x="person_number", y="proto_levenshtein", data=df)
-    plt.savefig(os.path.join(OUTPUT_DIR_PROTO,f"proto_levenshtein_strip{excl_proto0_label}{norm_label}.{img_extension_pyplots}"))
-    plt.clf()
+    # sns.violinplot(x="person_number", y="proto_levenshtein", data=df) # hue="proto_language"
+    # plt.savefig(os.path.join(OUTPUT_DIR_PROTO,f"proto_levenshtein_violin{excl_proto0_label}{norm_label}.{img_extension_pyplots}"))
+    # plt.clf()
+    # sns.stripplot(x="person_number", y="proto_levenshtein", data=df)
+    # plt.savefig(os.path.join(OUTPUT_DIR_PROTO,f"proto_levenshtein_strip{excl_proto0_label}{norm_label}.{img_extension_pyplots}"))
+    # plt.clf()
 
 
 if __name__ == "__main__":
