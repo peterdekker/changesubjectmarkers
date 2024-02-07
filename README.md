@@ -1,4 +1,11 @@
-# Crosslinguistic analysis rate of change
+# changepersonmarkers
+## Background
+This code performs the analysis described in the following paper:
+
+Peter Dekker, Sonja Gipper & Bart de Boer (2024). 3SG is the most conservative person marker across languages. Accepted for Evolang 2024.
+
+
+## Installation
 With the script ``analyse_data.py``, an analysis of the rate of change of person markers for different grammatical persons is performed.
 
 The script requires a few installation steps:
