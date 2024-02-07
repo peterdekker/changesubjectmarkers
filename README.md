@@ -1,4 +1,4 @@
-# changepersonmarkers
+# changesubjectmarkers
 ## Background
 This code accompanies the following paper, which describes the analysis performed using this code:
 

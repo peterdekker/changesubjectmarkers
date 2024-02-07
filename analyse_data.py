@@ -1,5 +1,5 @@
 
-# changepersonmarkers: Perform statistical analysis of change between proto and modern forms of person markers.
+# changesubjectmarkers: Perform statistical analysis of change between proto and modern forms of person markers.
 # Copyright (C) 2024  Peter Dekker, Sonja Gipper, Bart de Boer
 
 # This program is free software: you can redistribute it and/or modify
