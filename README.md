@@ -1,8 +1,8 @@
 # changesubjectmarkers
 ## Background
-This code accompanies the following paper, which describes the analysis performed using this code:
+This code accompanies the following paper (Evolang 2024 presentation & proceedings paper), which describes the analysis performed using this code:
 
-Peter Dekker, Sonja Gipper & Bart de Boer (2024). 3SG is the most conservative subject marker across languages. Accepted for Evolang 2024.
+Peter Dekker, Sonja Gipper & Bart de Boer (2024). 3SG is the most conservative subject marker across languages: An exploratory study of rate of change.
 
 A cross-linguistic analysis of the rate of change of different subject markers is performed, by comparing proto and modern forms from the following dataset:
 
